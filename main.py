@@ -5,12 +5,13 @@ import signal
 import os
 import readline
 
-#TODO: ADD too much arguments warning REFACT CODE. HELP. TAB AUTOCOMPLETE. PIPING. GREP
+#TODO: ADD too much arguments warning REFACT CODE(modules functions and comments). HELP. TAB AUTOCOMPLETE. PIPING. GREP . CHEK INPUT BUFFER AFTER CTRL-C
 
 def sig_int_handle(signal_num, frame):
      print("ctrl-c pressed")
-     sys.stdout.write("$ ")
-     sys.stdout.flush()
+     sys.stdout.write("$ ") #chek stream after ctr-c
+     sys.stdout.flush() # обновить приглашение $ в терминале сразу после очистки буфера ввода
+
 
 #registarate sig_int_handle
 signal.signal(signal.SIGINT, sig_int_handle)
@@ -72,7 +73,7 @@ def main():
                             try:
                                 subprocess.run([cmd] + args)
                             except subprocess.CalledProcessError as e: #print falied code
-                                print(e)
+                                print(e.returncode)
                         else:
                             print(f"external command {command}: not found")
                     case _:
