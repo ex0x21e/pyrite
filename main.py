@@ -5,7 +5,8 @@ import signal
 import os
 import readline
 
-#TODO: ADD too much arguments warning REFACT CODE(modules functions and comments). HELP. TAB AUTOCOMPLETE. PIPING. GREP . CHEK INPUT BUFFER AFTER CTRL-C
+#TODO: ADD too much arguments warning. REFACT CODE(modules functions and comments). HELP. TAB AUTOCOMPLETE. PIPING. GREP . CHEK INPUT BUFFER AFTER CTRL-C
+#Support for background processes (&)
 
 def sig_int_handle(signal_num, frame):
      print("ctrl-c pressed")
@@ -31,8 +32,8 @@ def main():
             if command := input():
                 match command.split():
                     case ["echo", *args]:
-                        print(" ".join(args))
-                    
+                        print(" ".join([arg.strip("'").strip('"') for arg in args]))
+                        
                     case ["exit", status]:
                             print(f"exiting with status {status}")
                             sys.exit(int(status))
@@ -73,13 +74,13 @@ def main():
                             try:
                                 subprocess.run([cmd] + args)
                             except subprocess.CalledProcessError as e: #print falied code
-                                print(e.returncode)
+                                print(f"error called external command {cmd}: returned code {e.returncode}")
                         else:
                             print(f"external command {command}: not found")
                     case _:
                         print(f"{command}: not found")
                 
-        except EOFError:
+        except EOFError: #ctrl-d
             print("Exiting...")
             sys.exit()
             
