@@ -8,6 +8,16 @@ import readline
 #TODO: ADD too much arguments warning. REFACT CODE(modules functions and comments). HELP. TAB AUTOCOMPLETE. PIPING. GREP . CHEK INPUT BUFFER AFTER CTRL-C
 #Support for background processes (&)
 
+def buildin_commands_handler():
+     pass
+def external_commands_handler():
+     pass
+
+def signals_handler():
+     return {
+          "sig_int_handle": sig_int_handle
+     }
+
 def sig_int_handle(signal_num, frame):
      print("ctrl-c pressed")
      sys.stdout.write("$ ") #chek stream after ctr-c
@@ -34,11 +44,13 @@ def main():
                     case ["echo", *args]:
                         print(" ".join([arg.strip("'").strip('"') for arg in args]))
                         
-                    case ["exit", status]:
+                    case ["exit", *args]:
+                          try:
+                            status = int(args[0]) if args else 0
                             print(f"exiting with status {status}")
-                            sys.exit(int(status))
-                    case ["exit"]:
-                        sys.exit(0)
+                            sys.exit(status)
+                          except ValueError:
+                               sys.exit()
 
                     case ["type", cmd]:
                         path = shutil.which(cmd)
@@ -50,23 +62,20 @@ def main():
                         else:
                             print(f'{cmd}: not found')
                             
-                    case ["cd", dir]: 
-                        try:
-                            if dir == "~":
+                    case ["cd", *dir]: 
+                          try:
+                            if len(dir) >= 2:
+                                sys.stderr.write("cd: Too mach arguments\n")
+                            elif not dir or dir[0] == "~":
                                 os.chdir(os.path.expanduser("~"))
                             else:
-                                os.chdir(dir)
-
-                        except FileNotFoundError:
-                                print(f"cd: {dir}: No such file or directory")
-
-                    case ["cd"]:
-                        os.chdir(os.path.expanduser("~"))
+                                os.chdir(dir[0])
+                          except FileNotFoundError:
+                              print(f"cd: {dir[0]}: No such file io directory")
                         
                     case ["pwd"]:
                             print(os.getcwd())
                 
-
                     #external commands
                     case [cmd, *args]:
                         path = shutil.which(cmd)
