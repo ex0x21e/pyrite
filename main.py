@@ -5,22 +5,14 @@ import signal
 import os
 import readline
 
-#TODO: ADD too much arguments warning. REFACT CODE(modules functions and comments). HELP. TAB AUTOCOMPLETE. PIPING. GREP . CHEK INPUT BUFFER AFTER CTRL-C
+
+#TODO: REFACT CODE(modules functions and comments). HELP. TAB AUTOCOMPLETE. PIPING. GREP. CHEK INPUT BUFFER AFTER CTRL-C
 #Support for background processes (&)
 
-def buildin_commands_handler():
-     pass
-def external_commands_handler():
-     pass
-
-def signals_handler():
-     return {
-          "sig_int_handle": sig_int_handle
-     }
 
 def sig_int_handle(signal_num, frame):
      print("ctrl-c pressed")
-     sys.stdout.write("$ ") #chek stream after ctr-c
+     sys.stdout.write("$ ") #ctr-c
      sys.stdout.flush() # обновить приглашение $ в терминале сразу после очистки буфера ввода
 
 
@@ -38,11 +30,11 @@ def main():
 
     while True:
         try:
-            sys.stdout.write("$ ")
+            sys.stdout.write(f"pyrite:{os.getcwd()}$ ")
             if command := input():
                 match command.split():
                     case ["echo", *args]:
-                        print(" ".join([arg.strip("'").strip('"') for arg in args]))
+                        print("".join([arg.strip("'").strip('"') for arg in args]))
                         
                     case ["exit", *args]:
                           try:
